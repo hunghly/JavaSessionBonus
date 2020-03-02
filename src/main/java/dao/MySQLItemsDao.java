@@ -6,6 +6,7 @@ import java.sql.*;
 
 
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MySQLItemsDao implements Items {
@@ -25,8 +26,21 @@ public class MySQLItemsDao implements Items {
     }
 
     @Override
-    public List<Item> all() {
-        return null;
+    public List<Item> all() throws SQLException {
+        List<Item> returnList = new ArrayList<>();
+        String sqlQuery = "SELECT * FROM items";
+        Statement stmt = this.connection.createStatement();
+        ResultSet rs = stmt.executeQuery(sqlQuery);
+        while (rs.next()) {
+            System.out.println("id " + rs.getLong(1));
+            System.out.println("name " + rs.getString(2));
+            System.out.println("cents " + rs.getInt(3));
+            long id = rs.getLong(1);
+            String name = rs.getString(2);
+            int cents = rs.getInt(3);
+            returnList.add(new Item(id, name, cents));
+        }
+        return returnList;
     }
 
     @Override
@@ -46,7 +60,8 @@ public class MySQLItemsDao implements Items {
         Items mySqlDao = DaoFactory.getItemsDao();
         Item bat = new Item("bat", 1800);
         Item bike = new Item("bike", 8000);
-        mySqlDao.insert(bat);
-        mySqlDao.insert(bike);
+//        mySqlDao.insert(bat);
+//        mySqlDao.insert(bike);
+        mySqlDao.all();
     }
 }
